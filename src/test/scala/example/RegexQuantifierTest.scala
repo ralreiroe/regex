@@ -31,6 +31,23 @@ class RegexQuantifierTest extends FlatSpec with Matchers {
     println("""\R""".r.findAllIn(multilineString).toList)
   }
 
+  "find end of input vs. end of line" should "work" in {
+
+    println("""-------------"""+"""^(.*?)$""".r.findAllIn("""auser1 home1b""").toList)    //match start/end of INPUT
+
+    println("""-------------"""+"""(?m)^(.*?)$""".r.findAllIn(        //multiline mode - makes ^ and $ apply to start/end of LINE
+      """auser1 home1b
+        |auser1 home1b""".stripMargin).toList)
+
+
+
+  }
+
+  "replacing empty lines" should "work" in {
+
+
+  }
+
   "quantifiers" can "also attach to capture groups and character classes too" in {
 
     //http://www.regular-expressions.info/charclass.html
