@@ -37,6 +37,29 @@ class RegexOrTest extends FlatSpec with Matchers {
 
 
   }
+
+  "extraction based on matching one or the other pattern" should "work" in {
+
+    //this pattern matches when from is not followed by a separator and captures every char to the end
+    val fromNotFollowedBySeparator = """.*from([^,;|\s]*)$""".r
+
+    //this pattern matches when from is followed by a separator and captures every char between from and the separator
+    val fromfollowedBySeparator = """.*from(.*?)[,;|\s].*""".r
+
+    def extractDateFormat(str: String) = str match {
+      case fromNotFollowedBySeparator(df) => df
+      case fromfollowedBySeparator(df) => df
+    }
+
+    extractDateFormat("""entity, from""") shouldBe empty
+    extractDateFormat("""entity, fromYYYY""") shouldBe "YYYY"
+    extractDateFormat("""entity, fromYYY, sc""") shouldBe "YYY"
+    extractDateFormat("""entity; fromYYY, sc""") shouldBe "YYY"
+    extractDateFormat("""entity| fromYYY, sc""") shouldBe "YYY"
+    extractDateFormat("""entity fromYYY, sc""") shouldBe "YYY"
+    extractDateFormat("""entity, from, sc""") shouldBe empty
+
+  }
   
   
   
