@@ -13,17 +13,30 @@ class ExtractionTest extends FlatSpec with Matchers {
 
     val pattern(count, fruit) = "100 Bananas"
 
-    val pattern2 = """.*from(.*)$""".r
+    //this pattern matches when from is not followed by a separator and captures every char to the end
+    val fromNotFollowedBySeparator = """.*from([^,;|\s]*)$""".r
 
-    val pattern2(df) = "fromYYYY"
-
+    val fromNotFollowedBySeparator(df) = "fromYYYY"
     df shouldBe "YYYY"
 
-    val pattern3 = """.*from(.*?)[,;|\s].*""".r
+    intercept[MatchError] {
+      val fromNotFollowedBySeparator(df2) = "fromYYYY sc"
+    }
+
+    //this pattern matches when from is followed by a separator and captures every char between from and the separator
+    val fromfollowedBySeparator = """.*from(.*?)[,;|\s].*""".r
+
+    val fromfollowedBySeparator(df2) = "fromYYYY, sc"
+    df2 shouldBe "YYYY"
+
+    intercept[MatchError] {
+      val fromfollowedBySeparator(df2) = "fromYYYY"
+    }
+
 
     def extractDateFormat(str: String) = str match {
-      case pattern3(df) => df
-      case pattern2(df) => df
+      case fromNotFollowedBySeparator(df) => df
+      case fromfollowedBySeparator(df) => df
     }
 
     extractDateFormat("""entity, from""") shouldBe empty
