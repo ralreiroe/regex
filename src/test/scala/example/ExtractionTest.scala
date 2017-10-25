@@ -46,6 +46,9 @@ class ExtractionTest extends FlatSpec with Matchers {
     extractDateFormat("""entity| fromYYY, sc""") shouldBe "YYY"
     extractDateFormat("""entity fromYYY, sc""") shouldBe "YYY"
     extractDateFormat("""entity, from, sc""") shouldBe empty
+    extractDateFormat("""entity,from,sc""") shouldBe empty
+    intercept[MatchError] { extractDateFormat("""entity, fro""") }
+    intercept[MatchError] { extractDateFormat("""entity, sc""") }
 
   }
 
