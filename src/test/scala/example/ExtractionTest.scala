@@ -13,14 +13,19 @@ class ExtractionTest extends FlatSpec with Matchers {
 
     val pattern(count, fruit) = "100 Bananas"
 
-    //this pattern matches when from is not followed by a separator and captures every char to the end
+    //this pattern matches ONLY when between from and end ONLY characters OTHER THAN commas,semiscolons,pipes and whitespaces are found
     val fromNotFollowedBySeparator = """.*from([^,;|\s]*)$""".r
+    //when it matches, it will capture all those characters between from and end
 
     val fromNotFollowedBySeparator(df) = "fromYYYY"
     df shouldBe "YYYY"
+    val fromNotFollowedBySeparator(d2) = "from"
+    d2 shouldBe ""
 
     intercept[MatchError] {
       val fromNotFollowedBySeparator(df2) = "fromYYYY sc"
+      val fromNotFollowedBySeparator(df3) = "fromYYYY "
+      val fromNotFollowedBySeparator(df4) = "fromYYYY|sc "
     }
 
     //this pattern matches when from is followed by a separator and captures every char between from and the separator
