@@ -41,6 +41,8 @@ class RegexLookAheadBehindTest extends FlatSpec with Matchers {
 
   "look ahead" should "work by finding all words (sequences made up of 1 or more word char ie [A-Za-z_0-9] followd by ->" in {
 
+    //https://stackoverflow.com/questions/1751301/regex-match-entire-words-only
+
     """(\w+)(?= ->)""".r.replaceAllIn("""Map(foo -> List(3, 4), bar -> List(42))""", """"$1"""") shouldBe """Map("foo" -> List(3, 4), "bar" -> List(42))"""
 
   }
