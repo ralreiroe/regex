@@ -22,12 +22,12 @@ class RegexBasicIgnoreTillMatchThenEatThenCapture extends FlatSpec with Matchers
 
     //(1) everything before ^ unchanged, (2) then match and eat ^ (it is not in a group),, (3) then capture digits after ^
 
-    """5 * x^3 - 6 * x^1 + 1""".replaceAll("""[\^]([0-9]+)""", """<sup>$1</sup>""") shouldBe("""5 * x<sup>3</sup> - 6 * x<sup>1</sup> + 1""")
-    """5 * x^3 - 6 * x^1 + 1""".replaceAll("""\^([0-9]+)""", """<sup>$1</sup>""") shouldBe("""5 * x<sup>3</sup> - 6 * x<sup>1</sup> + 1""")
+    """5 * x^3 - 6 * x^1 + 1""".replaceAll("""[\^]([0-9]+)""", """<sup>$1</sup>""") shouldBe """5 * x<sup>3</sup> - 6 * x<sup>1</sup> + 1"""
+    """5 * x^3 - 6 * x^1 + 1""".replaceAll("""\^([0-9]+)""", """<sup>$1</sup>""") shouldBe """5 * x<sup>3</sup> - 6 * x<sup>1</sup> + 1"""
 
-    """[\^]([0-9]+)""".r.findAllIn("""5 * x^3 - 6 * x^1 + 1""").toList shouldBe(List("^3", "^1"))
-    """[\^][0-9]+""".r.findAllIn("""5 * x^3 - 6 * x^1 + 1""").toList shouldBe(List("^3", "^1"))
-    """\^[0-9]+""".r.findAllIn("""5 * x^3 - 6 * x^1 + 1""").toList shouldBe(List("^3", "^1"))
+    """[\^]([0-9]+)""".r.findAllIn("""5 * x^3 - 6 * x^1 + 1""").toList shouldBe List("^3", "^1")
+    """[\^][0-9]+""".r.findAllIn("""5 * x^3 - 6 * x^1 + 1""").toList shouldBe List("^3", "^1")
+    """\^[0-9]+""".r.findAllIn("""5 * x^3 - 6 * x^1 + 1""").toList shouldBe List("^3", "^1")
 
     println("""5 * x^3 - 6 * x^1 + 1""".replaceAll("\\^([0-9]+)", """<sup>$1</sup>"""))     //note: double-quotes needed to escapes
 
@@ -48,7 +48,7 @@ class RegexBasicIgnoreTillMatchThenEatThenCapture extends FlatSpec with Matchers
     res = """\^([0-9]+)""".r.findAllIn("""5 * x^3 - 6 * x^1 + 1""").toList
     println(res)
 
-    """(?<=[\\\\])(;)""".r.replaceAllIn("quick;brown\\\\;fox;jumps;over;the\\\\lazy;dog", ",") shouldBe("""quick;brown\\,fox;jumps;over;the\\lazy;dog""")
+    """(?<=[\\\\])(;)""".r.replaceAllIn("quick;brown\\\\;fox;jumps;over;the\\\\lazy;dog", ",") shouldBe """quick;brown\\,fox;jumps;over;the\\lazy;dog"""
 
 
   }
