@@ -14,6 +14,13 @@ class AfterLastTest extends FlatSpec with Matchers {
 
     format shouldBe "GB"
 
+    def extractCountryCode(str: String) = {
+      val allAfterLastFwSlash(format) = str
+      format
+    }
+
+    extractCountryCode("http://refdata.bankofam/primitive/geography/country/GB") shouldBe "GB"
+
     val allAfterLastFwSlash3 = ".*/([^/]+)$".r   //will also work
 
     val allAfterLastFwSlash3(format3) = "http://refdata.bankofam/primitive/geography/country/GB"
