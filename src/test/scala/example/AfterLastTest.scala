@@ -10,19 +10,21 @@ class AfterLastTest extends FlatSpec with Matchers {
 
     val allAfterLastFwSlash(format) = "http://refdata.bankofam/primitive/geography/country/GB"
 
-    println(format)
+    "http://refdata.bankofam/primitive/geography/country/GB".replaceAll(allAfterLastFwSlash.toString, "$1") shouldBe "GB"
+
+    format shouldBe "GB"
 
     val allAfterLastFwSlash3 = ".*/([^/]+)$".r   //will also work
 
     val allAfterLastFwSlash3(format3) = "http://refdata.bankofam/primitive/geography/country/GB"
 
-    println(format3)
+    format3 shouldBe "GB"
 
     val allAfterLastFwSlash2 = ".*([^/]+$)".r   //will not work. will eat everything greedily until a match of a single char before the end. hence B
 
     val allAfterLastFwSlash2(format2) = "http://refdata.bankofam/primitive/geography/country/GB"
 
-    println(format2)
+    format2 shouldBe "B"
 
 
 
