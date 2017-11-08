@@ -28,6 +28,13 @@ class LineBreaksTest extends FlatSpec with Matchers {
       """auser1 home1b
         |auser1 home1b""".stripMargin).toList)
 
+    //this does not match:
+//    val str = """auser1 home1b
+//                |auser1 home1b""".stripMargin
+//    val pattern = """(?m)^(.*?)$""".r
+//    val pattern(df) = str
+//    println(df)
+
 
 
   }
