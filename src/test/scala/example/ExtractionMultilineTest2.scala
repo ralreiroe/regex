@@ -1,7 +1,5 @@
 package example
 
-import java.util.regex.Pattern
-
 import org.scalatest.{FreeSpecLike, Matchers}
 
 /**
@@ -9,50 +7,73 @@ import org.scalatest.{FreeSpecLike, Matchers}
   */
 class ExtractionMultilineTest2 extends FreeSpecLike with Matchers {
 
-  "pattern extraction should work" in {
+  val input =
+    """jjj
+      |begin {
+      |first line}
+      |some text
+      |begin {
+      |  content to extract
+      |  content to extract
+      |}
+      |some text
+      |begin {
+      |  other content to extract
+      |}
+      |some text""".stripMargin
 
-    val input = """begin {first line}
-                  |some text
-                  |begin {
-                  |  content to extract
-                  |  content to extract
-                  |}
-                  |some text
-                  |begin {
-                  |  other content to extract
-                  |}
-                  |some text""".stripMargin
+  private val corePattern = """begin \{(.*?)\}"""
 
-    val BlockSingleLine = """begin \{(.*?)\}""".r
+  "Multiline string - stops after first match" in {
 
-    BlockSingleLine findAllIn input foreach (_ match {
-      case BlockSingleLine(content) => content shouldBe "first line"
-      case _ => println("NO MATCH")
+    val FirstBlock = corePattern.r
+
+    FirstBlock findAllIn input foreach (_ match {
+      case FirstBlock(content) => content shouldBe "\nfirst line"
+      case _ => fail
     })
+  }
 
-    val BlockMultipleLine = """(?s)begin \{(.*?)\}""".r
+  "Multiline string - carry on matching until end of string" in {
 
-    val expectedResult = List("""first line""","""
-                                |  content to extract
-                                |  content to extract
-                                |""".stripMargin,"""
-                                |  other content to extract
-                                |
-                                |""".stripMargin)
+    val BlockMultipleLine = s"""(?s)${corePattern}""".r
+
+    val expectedResult = List("\nfirst line",
+      """
+        |  content to extract
+        |  content to extract
+        |""".stripMargin,
+      """
+        |  other content to extract
+        |
+        |""".stripMargin)
 
     val ints = Stream.from(0).iterator
     BlockMultipleLine findAllIn input foreach (_ match {
       case BlockMultipleLine(content) => {
         content.trim shouldBe expectedResult(ints.next).trim
       }
-      case _ => println("NO MATCH")
+      case _ => fail
     })
+  }
 
-    val BlockGreedilyToLastBeginAndOnlyMatchLast = """(?s).*begin \{(.*)\}.*""".r
+  "Multiline string - greedy advance to match but on first line only" in {
+
+    val GreedyBlockOnFirstLineOnly = s""".*${corePattern}.*""".r //without (?s) the dot only does not match EOL chars (everything else but \n, \r etc.)
 
     input match {
-      case BlockGreedilyToLastBeginAndOnlyMatchLast(content) => content shouldBe "\n  other content to extract\n"
-      case _ => println("NO MATCH")
+      case GreedyBlockOnFirstLineOnly(content) => fail
+      case _ => succeed
+    }
+  }
+
+  "Multiline string - greedy advance to match across multiline string" in {
+
+    val GreedyBlockAcrossMultipleLines = s"""(?s).*${corePattern}.*""".r //with (?s) the dot also matches EOL chars like \n
+
+    input match {
+      case GreedyBlockAcrossMultipleLines(content) => content shouldBe "\n  other content to extract\n"
+      case _ => fail
     }
 
   }
