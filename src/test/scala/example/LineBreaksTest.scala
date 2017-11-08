@@ -22,11 +22,15 @@ class LineBreaksTest extends FlatSpec with Matchers {
 
   "find end of input vs. end of line" should "work" in {
 
-    println("""-------------"""+"""^(.*?)$""".r.findAllIn("""auser1 home1b""").toList)    //match start/end of INPUT
+    """^(.*?)$""".r.findAllIn("""auser1 home1b""").toList shouldBe List("auser1 home1b")    //match start/end of INPUT
 
-    println("""-------------"""+"""(?m)^(.*?)$""".r.findAllIn(        //multiline mode - makes ^ and $ apply to start/end of LINE
+    """(?m)^(.*?)$""".r.findAllIn(        //multiline mode - makes ^ and $ apply to start/end of LINE
       """auser1 home1b
-        |auser1 home1b""".stripMargin).toList)
+        |auser1 home1b""".stripMargin).toList shouldBe List("auser1 home1b", "auser1 home1b")
+
+    """^(.*?)$""".r.findAllIn(
+      """auser1 home1b
+        |auser1 home1b""".stripMargin).toList shouldBe List()     //in single-line mode nothing in the multi-line string is matched
 
     //this does not match:
 //    val str = """auser1 home1b
