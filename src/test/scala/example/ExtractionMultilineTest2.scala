@@ -7,36 +7,77 @@ import org.scalatest.{FreeSpecLike, Matchers}
   */
 class ExtractionMultilineTest2 extends FreeSpecLike with Matchers {
 
-  val input =
-    """jjj
-      |begin {
-      |first line}
-      |some text
-      |begin {
-      |  content to extract
-      |  content to extract
-      |}
-      |some text
-      |begin {
-      |  other content to extract
-      |}
-      |some text""".stripMargin
+  private var corePattern = """begin \{(.*?)\}"""
 
-  private val corePattern = """begin \{(.*?)\}"""
+  "Matching a single-line block in a single-line string" in {
+    val SingleLineBlock = corePattern.r
 
-  "Multiline string - stops after first match" in {
+    (SingleLineBlock findAllIn """begin {content}""") shouldNot be(empty)
+    (SingleLineBlock findAllIn """xxbegin {content}""") shouldBe(empty)
 
-    val FirstBlock = corePattern.r
+    val GreedyBlockOnFirstLineOnly = s""".*${corePattern}.*""".r //without (?s) the dot only does not match EOL chars (everything else but \n, \r etc.)
 
-    FirstBlock findAllIn input foreach (_ match {
-      case FirstBlock(content) => content shouldBe "\nfirst line"
-      case _ => fail
-    })
+    """xxbegin {content}""" match {
+      case GreedyBlockOnFirstLineOnly(content) => fail
+      case _ => succeed
+    }
+
+
   }
 
-  "Multiline string - carry on matching until end of string" in {
+  corePattern = """begin \{(.*?)\}"""
 
-    val BlockMultipleLine = s"""(?s)${corePattern}""".r
+  "Matching a multi-line block without (?s)" in { //without (?s) the dot does not match EOL chars
+
+    val SingleLineBlock = corePattern.r
+
+
+    val oneSingleLineBlockOneMultilineBlock =
+      """
+        |begin {content}
+        |begin {con
+        |tent}
+      """.stripMargin
+    (SingleLineBlock findAllIn
+      oneSingleLineBlockOneMultilineBlock) shouldNot be(empty)
+
+    (SingleLineBlock findAllIn
+      oneSingleLineBlockOneMultilineBlock).toList.size shouldBe 1
+
+    (SingleLineBlock findAllIn
+      """
+        |begin {content
+        |conetn}
+      """.stripMargin) shouldBe empty
+
+  }
+
+  corePattern = """begin \{(.*?)\}"""
+
+  val MultiLineBlock = s"""(?s)${corePattern}""".r
+
+  "Matching a multi-line block" in {
+
+    (MultiLineBlock findAllIn
+      """
+        |begin {content
+        |conetn}
+      """.stripMargin) shouldNot be(empty)
+
+    val input =
+      """jjj
+        |begin {
+        |first line}kk
+        |some text
+        |begin {
+        |  content to extract
+        |  content to extract
+        |}
+        |some text
+        |begin {
+        |  other content to extract
+        |}
+        |some text""".stripMargin
 
     val expectedResult = List("\nfirst line",
       """
@@ -49,19 +90,42 @@ class ExtractionMultilineTest2 extends FreeSpecLike with Matchers {
         |""".stripMargin)
 
     val ints = Stream.from(0).iterator
-    BlockMultipleLine findAllIn input foreach (_ match {
-      case BlockMultipleLine(content) => {
+    MultiLineBlock findAllIn input foreach (_ match {
+      case MultiLineBlock(content) => {
         content.trim shouldBe expectedResult(ints.next).trim
       }
       case _ => fail
     })
   }
 
+  val input =
+    """jjj
+      |begin {
+      |first line}kk
+      |some text
+      |begin {
+      |  content to extract
+      |  content to extract
+      |}
+      |some text
+      |begin {
+      |  other content to extract
+      |}
+      |some text""".stripMargin
+
+
+  corePattern = """begin \{(.*?)\}"""
+
   "Multiline string - greedy advance to match but on first line only" in {
 
     val GreedyBlockOnFirstLineOnly = s""".*${corePattern}.*""".r //without (?s) the dot only does not match EOL chars (everything else but \n, \r etc.)
 
     input match {
+      case GreedyBlockOnFirstLineOnly(content) => fail
+      case _ => succeed
+    }
+
+    "begin " match {
       case GreedyBlockOnFirstLineOnly(content) => fail
       case _ => succeed
     }
@@ -75,7 +139,29 @@ class ExtractionMultilineTest2 extends FreeSpecLike with Matchers {
       case GreedyBlockAcrossMultipleLines(content) => content shouldBe "\n  other content to extract\n"
       case _ => fail
     }
+  }
 
+  "ggg" in {
+
+    val str =
+      """<row>
+        |<a>fromYYYY</a>
+        |<b>notinterested</b>
+        |<c>fromxyz</c>
+        |</row>
+      """.stripMargin
+
+    val core = "from([^<]*)<"
+
+    val corePattern = s"${core}".r
+
+    val ints = Stream.from(0).iterator
+    val matches = List("YYYY", "xyz")
+
+    corePattern findAllIn str foreach (_ match {
+      case corePattern(df) => df shouldBe matches(ints.next)
+      case _ => fail
+    })
   }
 
 
