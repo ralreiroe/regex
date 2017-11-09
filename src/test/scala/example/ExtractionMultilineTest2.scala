@@ -4,6 +4,9 @@ import org.scalatest.{FreeSpecLike, Matchers}
 
 /**
   * https://stackoverflow.com/questions/1691002/scala-regex-multiple-block-capturing
+  *
+  * Gist: to match patterns that span EOLs, use (?s) to make the dot in .* match everything INCLUDING EOL chars.
+  * By default the dot does not match EOL chars, only everything else.
   */
 class ExtractionMultilineTest2 extends FreeSpecLike with Matchers {
 
@@ -141,7 +144,7 @@ class ExtractionMultilineTest2 extends FreeSpecLike with Matchers {
     }
   }
 
-  "ggg" in {
+  "matching of single-line patterns works irrespective of whether they occur in single-line or multi-line String" in {
 
     val str =
       """<row>
@@ -155,10 +158,19 @@ class ExtractionMultilineTest2 extends FreeSpecLike with Matchers {
 
     val corePattern = s"${core}".r
 
-    val ints = Stream.from(0).iterator
+    var ints = Stream.from(0).iterator
     val matches = List("YYYY", "xyz")
 
     corePattern findAllIn str foreach (_ match {
+      case corePattern(df) => df shouldBe matches(ints.next)
+      case _ => fail
+    })
+
+    ints = Stream.from(0).iterator
+
+    str.replaceAll("""\R""", "").trim shouldBe """<row><a>fromYYYY</a><b>notinterested</b><c>fromxyz</c></row>"""
+
+    corePattern findAllIn (str.replaceAll("""\R""", "")) foreach (_ match {
       case corePattern(df) => df shouldBe matches(ints.next)
       case _ => fail
     })
