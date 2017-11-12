@@ -1,10 +1,10 @@
 package example
 
-import org.scalatest.{FlatSpec, Matchers}
+import scala.util.matching.Regex
 
-class AfterLastTest extends FlatSpec with Matchers {
+class AfterLastTest extends Spec {
 
-  "capture everything after last /" should "work" in {
+  "capture everything after last /" in {
 
     val allAfterLastFwSlash = ".*/([^/]+$)".r   //will eat everything greedily until a / then match 1 or more not-slash chars to the end
 
@@ -32,11 +32,17 @@ class AfterLastTest extends FlatSpec with Matchers {
     val allAfterLastFwSlash2(format2) = "http://refdata.bankofam/primitive/geography/country/GB"
 
     format2 shouldBe "B"
+  }
 
+  "last two letters" in {
 
+    //https://stackoverflow.com/questions/14628229/scala-regular-expression-with-end-of-string
 
+    val lasttwoChars = """.*([a-zA-Z]{2})$""".r
 
+    val lasttwoChars(format) = "http://refdata.bankofam/primitive/geography/country/GB"
 
+    format shouldBe "GB"
 
   }
 

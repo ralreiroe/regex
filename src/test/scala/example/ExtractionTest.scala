@@ -7,11 +7,16 @@ import org.scalatest.{FlatSpec, FreeSpecLike, Matchers}
   */
 class ExtractionTest extends FreeSpecLike with Matchers {
 
-  "pattern extraction should work" in {
+  "extract fixed number of strings should work" in {
 
     val pattern = "([0-9]+) ([A-Za-z]+)".r
 
     val pattern(count, fruit) = "100 Bananas"
+
+    (count, fruit) shouldBe ("100", "Bananas")
+  }
+
+  "pattern extraction should work" in {
 
     //this pattern matches ONLY when between from and end ONLY characters OTHER THAN commas,semiscolons,pipes,tabs and whitespaces are found
     val fromNotFollowedBySeparator = """.*from([^,;|\t\s]*)$""".r
@@ -59,6 +64,8 @@ class ExtractionTest extends FreeSpecLike with Matchers {
   }
 
   "unanchro" in {
+
+    //https://www.garysieling.com/blog/scala-regex-anchored-example
 
     val NameExtractor = "name=\"(.*)\"".r.unanchored
     val NameExtractorAnchored = "name=\"(.*)\"".r.anchored
