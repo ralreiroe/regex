@@ -1,6 +1,6 @@
 package example
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, FlatSpecLike, Matchers}
 
 /**
   *
@@ -16,9 +16,9 @@ import org.scalatest.{FlatSpec, Matchers}
   * https://stackoverflow.com/questions/632204/java-string-replace-using-regular-expressions
   *
   */
-class RegexBasicIgnoreTillMatchThenEatThenCapture extends FlatSpec with Matchers {
+class RegexBasicIgnoreTillMatchThenEatThenCapture extends Spec {
 
-  "replacing 5 * x^3 with 5 * x<sup>3</sup>" should """work""" in {
+  "replacing 5 * x^3 with 5 * x<sup>3</sup>" in {
 
     //(1) everything before ^ unchanged, (2) then match and eat ^ (it is not in a group),, (3) then capture digits after ^
 
@@ -35,7 +35,7 @@ class RegexBasicIgnoreTillMatchThenEatThenCapture extends FlatSpec with Matchers
 
   }
 
-  "testing " should "work" in  {
+  "testing work" in  {
 
     var res = List.empty[String]
 

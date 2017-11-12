@@ -28,17 +28,22 @@ class LineBreaksTest extends FlatSpec with Matchers {
       """auser1 home1b
         |auser1 home1b""".stripMargin).toList shouldBe List("auser1 home1b", "auser1 home1b")
 
-    """^(.*?)$""".r.findAllIn(
+    """^(.*?)$""".r.findAllIn(              //in single-line mode the . does not match an EOL char, hence .* does not match
       """auser1 home1b
-        |auser1 home1b""".stripMargin).toList shouldBe List()     //in single-line mode nothing in the multi-line string is matched
+        |auser1 home1b""".stripMargin).toList shouldBe List()
 
-    //this does not match:
-//    val str = """auser1 home1b
-//                |auser1 home1b""".stripMargin
-//    val pattern = """(?m)^(.*?)$""".r
-//    val pattern(df) = str
-//    println(df)
+    val str = """auser1 home1b
+                |auser1 home1b""".stripMargin
+    val pattern = """(?s)^(.*?)$""".r
+    val pattern(df) = str
+    println(df)
 
+    val res = """(?m).*from([^,;|\t]*)$""".r.findAllIn(
+      """fromYYYY
+        |
+      """.stripMargin).toList
+
+    println(res)
 
 
   }
