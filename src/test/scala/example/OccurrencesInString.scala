@@ -2,6 +2,10 @@ package example
 
 import scala.annotation.tailrec
 
+/**
+  * sliding goes from start to finish
+  * recursion goes from the whole string to smaller parts
+  */
 class OccurrencesInString extends Spec {
   val source = """sldkfjl "status":"ok" slflsk "status":"ok" lsdfjl   """
   val term = "status"
