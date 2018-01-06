@@ -10,9 +10,6 @@ lazy val root = (project in file(".")).
     )),
     name := "regex",
     libraryDependencies += scalaTest % Test,
-    libraryDependencies += "com.jcraft" % "jsch" % "0.1.54",
-    libraryDependencies += "org.apache.commons" % "commons-vfs2" % "2.1",
-
     libraryDependencies += "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.1.2"
 
 )
