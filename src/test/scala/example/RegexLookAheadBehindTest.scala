@@ -8,10 +8,10 @@ import org.scalatest.{FlatSpec, Matchers}
   * http://www.regular-expressions.info/lookaround.html
   *
   */
-class RegexLookAheadBehindTest extends FlatSpec with Matchers {
+class RegexLookAheadBehindTest extends Spec {
 
 
-  "positive (negative) lookbehind" should """match semicolons (not) preceded by double backslash""" in {
+  "positive (negative) lookbehind should match semicolons (not) preceded by double backslash" in {
 
     val NotPreceededBy = """(?<![\\\\])(;)""".r
     val matches = """(?<![\\\\])(;)""".r.findAllIn("quick;brown\\\\;fox;jumps;over;the\\\\lazy;dog").flatMap(txt => NotPreceededBy.unapplySeq(txt)).flatten
@@ -31,7 +31,7 @@ class RegexLookAheadBehindTest extends FlatSpec with Matchers {
 
   }
 
-  "negative lookbehind" should """work to match all 1s except the one at the start of the line""" in {
+  "negative lookbehind should work to match all 1s except the one at the start of the line" in {
 
     println("""(?<!^)1""".r.findAllIn("""100111000""").toList)      //>>>>matches ALL except the one at the start
     println("""^1""".r.findAllIn("""100111000""").toList)
@@ -39,7 +39,9 @@ class RegexLookAheadBehindTest extends FlatSpec with Matchers {
 
   }
 
-  "look ahead" should "work by finding all words (sequences made up of 1 or more word char ie [A-Za-z_0-9] followd by ->" in {
+  """quote all words followd by ->  ; Use look ahead for the "followed by"""" in {
+
+//    \w+ ~= [A-Za-z_0-9]+
 
     //https://stackoverflow.com/questions/1751301/regex-match-entire-words-only
 
