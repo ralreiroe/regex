@@ -45,7 +45,9 @@ class RegexLookAheadBehindTest extends Spec {
 
     //https://stackoverflow.com/questions/1751301/regex-match-entire-words-only
 
-    """(\w+)(?= ->)""".r.replaceAllIn("""Map(foo -> List(3, 4), bar -> List(42))""", """"$1"""") shouldBe """Map("foo" -> List(3, 4), "bar" -> List(42))"""
+    """(\w+)(?= ->)""".r.replaceAllIn(
+      """Map(foo -> List(3, 4), bar -> List(42))""",      """"$1"""") shouldBe
+      """Map("foo" -> List(3, 4), "bar" -> List(42))"""
 
   }
 
