@@ -20,6 +20,20 @@ class ExtractionTest extends FreeSpecLike with Matchers {
     val patternWithoutCaptureGroup = r2
     intercept[MatchError]{val patternWithoutCaptureGroup(nothingCaptured) = "blah blah Conflicting blah"}
 
+
+    //NOTE: FINDFIRSTIN - IN CONTRAST - DOES *NOT* CARE ABOUT CAPTURE GROUPS:
+
+    r2.findFirstIn("blah blah Conflicting blah").get shouldBe "blah blah Conflicting blah"
+
+    //THEY DON'T SEEM TO MAKE ANY DIFFERENCE EITHER:
+    val r3 = ".*(Conflicting).*".r
+    r3.findFirstIn("blah blah Conflicting blah").get shouldBe "blah blah Conflicting blah"
+
+    val r4 = "Conflicting".r
+    r4.findFirstIn("blah blah Conflicting blah").get shouldBe "Conflicting"
+
+
+
   }
 
   "extract fixed number of strings should work" in {
