@@ -7,6 +7,21 @@ import org.scalatest.{FlatSpec, FreeSpecLike, Matchers}
   */
 class ExtractionTest extends FreeSpecLike with Matchers {
 
+  "BASIC: you need at least one capture group (ie. open and close brackets)!!! otherwise you don't match anything" in {
+
+    val r1 = "(.*Conflicting.*)".r
+    val r2 = ".*Conflicting.*".r
+
+
+    val patternToCaptureWholeLineWithWord = r1
+    val patternToCaptureWholeLineWithWord(captured) = "blah blah Conflicting blah"
+    captured shouldBe "blah blah Conflicting blah"
+
+    val patternWithoutCaptureGroup = r2
+    intercept[MatchError]{val patternWithoutCaptureGroup(nothingCaptured) = "blah blah Conflicting blah"}
+
+  }
+
   "extract fixed number of strings should work" in {
 
     val pattern = "([0-9]+) ([A-Za-z]+)".r
@@ -35,7 +50,7 @@ class ExtractionTest extends FreeSpecLike with Matchers {
     }
 
     //this pattern matches when from is followed by a separator and captures every char between from and the separator
-    val fromfollowedBySeparator = """.*from(.*?)[,;|\s].*""".r
+    val fromfollowedBySeparator = """(?s).*from(.*?)[,;|\s].*""".r
 
     val fromfollowedBySeparator(df2) = "fromYYYY, sc"
     df2 shouldBe "YYYY"
@@ -52,10 +67,12 @@ class ExtractionTest extends FreeSpecLike with Matchers {
 
     extractDateFormat("""entity, from""") shouldBe empty
     extractDateFormat("""entity, fromYYYY""") shouldBe "YYYY"
+    extractDateFormat("entity, fromYYYY\r\n") shouldBe "YYYY"
     extractDateFormat("""entity, fromYYY, sc""") shouldBe "YYY"
     extractDateFormat("""entity; fromYYY, sc""") shouldBe "YYY"
     extractDateFormat("""entity| fromYYY, sc""") shouldBe "YYY"
     extractDateFormat("""entity fromYYY, sc""") shouldBe "YYY"
+    extractDateFormat("entity fromYYY, sc\r\n") shouldBe "YYY"
     extractDateFormat("""entity, from, sc""") shouldBe empty
     extractDateFormat("""entity,from,sc""") shouldBe empty
     intercept[MatchError] { extractDateFormat("""entity, fro""") }
