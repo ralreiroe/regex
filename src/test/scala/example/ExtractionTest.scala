@@ -2,43 +2,16 @@ package example
 
 import org.scalatest.{FlatSpec, FreeSpecLike, Matchers}
 
+import scala.util.matching.Regex
+
 /**
   * https://alvinalexander.com/scala/how-to-extract-parts-strings-match-regular-expression-regex-scala
   */
 class ExtractionTest extends FreeSpecLike with Matchers {
 
-  "BASIC: you need at least one capture group (ie. open and close brackets)!!! otherwise you don't match anything" in {
-
-    val r1 = "(.*Conflicting.*)".r
-    val r2 = ".*Conflicting.*".r
-
-
-    val patternToCaptureWholeLineWithWord = r1
-    val patternToCaptureWholeLineWithWord(captured) = "blah blah Conflicting blah"
-    captured shouldBe "blah blah Conflicting blah"
-
-    val patternWithoutCaptureGroup = r2
-    intercept[MatchError]{val patternWithoutCaptureGroup(nothingCaptured) = "blah blah Conflicting blah"}
-
-
-    //NOTE: FINDFIRSTIN - IN CONTRAST - DOES *NOT* CARE ABOUT CAPTURE GROUPS:
-
-    r2.findFirstIn("blah blah Conflicting blah").get shouldBe "blah blah Conflicting blah"
-
-    //THEY DON'T SEEM TO MAKE ANY DIFFERENCE EITHER:
-    val r3 = ".*(Conflicting).*".r
-    r3.findFirstIn("blah blah Conflicting blah").get shouldBe "blah blah Conflicting blah"
-
-    val r4 = "Conflicting".r
-    r4.findFirstIn("blah blah Conflicting blah").get shouldBe "Conflicting"
-
-
-
-  }
-
   "extract fixed number of strings should work" in {
 
-    val pattern = "([0-9]+) ([A-Za-z]+)".r
+    val pattern: Regex = "([0-9]+) ([A-Za-z]+)".r
 
     val pattern(count, fruit) = "100 Bananas"
 
