@@ -23,7 +23,7 @@ class Basic extends FreeSpecLike with Matchers {
     captured shouldBe Some(List("blah blah Conflicting blah"))
   }
 
-  "BASIC: for extraction, you need at least one capture group (ie. open and close brackets)!!! otherwise you don't match anything" in {
+  "BASIC II: for extraction, you need at least one capture group (ie. open and close brackets)!!! otherwise you don't match anything" in {
 
     val r1 = "(.*Conflicting.*)".r
     val r2 = ".*Conflicting.*".r
@@ -57,4 +57,32 @@ class Basic extends FreeSpecLike with Matchers {
 
   }
 
-}
+  "BASIC III: for extraction, the regex must match entire line or text by including .*" in {
+
+    val regex = ".*(q)(?=u).*".r
+
+    val res = "qu" match {
+      case regex(e) => e
+      case _ => "not"
+    }
+    res shouldBe "q"
+
+    val regex2 = "(q)(?=u)".r   //regex without the .* will not match at all
+
+    val res2 = "qu" match {
+      case regex2(e) => e
+      case _ => "not"
+    }
+    res2 shouldBe "not"
+
+    /**
+      * For find instead, they both match but the first finds the whole line, while the second finds q
+      */
+
+    regex.findFirstIn("blah blah qu ").get shouldBe "blah blah qu "
+    regex2.findFirstIn("blah blah qu ").get shouldBe "q"
+
+
+  }
+
+  }
