@@ -21,6 +21,16 @@ class Basic extends FreeSpecLike with Matchers {
     //is same as
     val captured = r1.unapplySeq("blah blah Conflicting blah")
     captured shouldBe Some(List("blah blah Conflicting blah"))
+
+
+    val regex = """([A-Z]{2})""".r
+
+    regex.unapplySeq("") shouldBe None
+    regex.unapplySeq("-1") shouldBe None
+    regex.unapplySeq("GB") shouldBe Some(List("GB"))
+
+    regex.findFirstIn("GB") shouldBe Some("GB")
+
   }
 
   "BASIC II: for extraction, you need at least one capture group (ie. open and close brackets)!!! otherwise you don't match anything" in {
