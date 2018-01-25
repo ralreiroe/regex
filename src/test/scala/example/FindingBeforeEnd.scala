@@ -3,7 +3,7 @@ package example
 //NOT
 //OR
 //MULTILINE
-class MatchLastCharInTextNotEndingInThisOrThat extends Spec {
+class FindingBeforeEnd extends Spec {
 
   "if text not ends in , or whitespace, match last character in single line string" in {
 
