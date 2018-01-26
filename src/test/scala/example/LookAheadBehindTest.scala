@@ -8,8 +8,21 @@ import org.scalatest.{FlatSpec, Matchers}
   * http://www.regular-expressions.info/lookaround.html
   *
   */
-class RegexLookAheadBehindTest extends Spec {
+class LookAheadBehindTest extends Spec {
 
+  "" in {
+
+    val regex = ".*(q(?=u)).*".r
+
+      "qu" match {
+     case regex(e) => println(e)
+     case _ => println("not")
+   }
+
+
+    "q(?=u)".r.findAllIn("qa qv qx qz qu qi qo qu").toList.size shouldBe 2
+    "q(?!u)".r.findAllIn("qa qv qx qz qu qi qo qu").toList.size shouldBe 6
+ }
 
   "positive (negative) lookbehind should match semicolons (not) preceded by double backslash" in {
 
