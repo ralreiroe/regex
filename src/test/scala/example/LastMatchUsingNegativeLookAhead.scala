@@ -1,5 +1,7 @@
 package example
 
+import scala.util.matching.Regex
+
 class LastMatchUsingNegativeLookAhead extends Spec {
 
   //    https://frightanic.com/software-development/regex-match-last-occurrence/
@@ -40,6 +42,19 @@ class LastMatchUsingNegativeLookAhead extends Spec {
     greedy.unapplySeq("a,b,c,blah") shouldBe Some(List("h"))
   }
 
+
+  "using negative lookahead to find rows that do not match a pattern" in {
+
+    """\d{4}-\d{2}-\d{2}""".r.findAllIn("1966-01-03").toList shouldBe List("1966-01-03")
+    """\d{4}-\d{2}-\d{2}""".r.findAllIn("1966-01-0").toList shouldBe empty
+    """(?!\d{4}-\d{2}-\d{2})(.*)""".r.findAllIn("1966-01-03").toList shouldBe List("966-01-03", "")
+    """(?!\d{4}-\d{2}-\d{2})(.*)""".r.findAllIn("1966-01-0").toList shouldBe List("1966-01-0", "")
+
+    //If the negative lookahead stops right at 0, we know that the pattern is not there at all
+    val startOfFirstMatch = """(?!\d{4}-\d{2}-\d{2})(.*)""".r.findFirstMatchIn("1966-01-03").get.start
+    startOfFirstMatch shouldNot be 0
+    """(?!\d{4}-\d{2}-\d{2})(.*)""".r.findFirstMatchIn("1966-01-0").get.start shouldBe 0   //
+  }
 
 
 }
